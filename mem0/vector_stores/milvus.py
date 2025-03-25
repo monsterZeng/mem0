@@ -103,7 +103,9 @@ class MilvusDB(VectorStoreBase):
         """
         operands = []
         for key, value in filters.items():
-            if isinstance(value, str):
+            if isinstance(value, list):
+                operands.append(f'metadata["{key}"] <= "{value[1]}" and metadata["{key}"] >= "{value[0]}"')
+            elif isinstance(value, str):
                 operands.append(f'(metadata["{key}"] == "{value}")')
             else:
                 operands.append(f'(metadata["{key}"] == {value})')

@@ -46,7 +46,7 @@ class Memory(MemoryBase):
         self.api_version = self.config.version
 
         self.enable_graph = False
-
+        self.timezone=config.timezone
         if self.config.graph_store.config:
             from mem0.memory.graph_memory import MemoryGraph
 
@@ -604,7 +604,9 @@ class Memory(MemoryBase):
         metadata = metadata or {}
         metadata["data"] = data
         metadata["hash"] = hashlib.md5(data.encode()).hexdigest()
-        metadata["created_at"] = datetime.now(pytz.timezone("US/Pacific")).isoformat()
+        created_at = datetime.now(pytz.timezone(self.timezone)).isoformat()
+        metadata["created_at"] = created_at
+        metadata["updated_at"] = created_at
 
         self.vector_store.insert(
             vectors=[embeddings],
@@ -628,7 +630,7 @@ class Memory(MemoryBase):
         new_metadata["data"] = data
         new_metadata["hash"] = hashlib.md5(data.encode()).hexdigest()
         new_metadata["created_at"] = existing_memory.payload.get("created_at")
-        new_metadata["updated_at"] = datetime.now(pytz.timezone("US/Pacific")).isoformat()
+        new_metadata["updated_at"] = datetime.now(pytz.timezone(self.timezone)).isoformat()
 
         if "user_id" in existing_memory.payload:
             new_metadata["user_id"] = existing_memory.payload["user_id"]

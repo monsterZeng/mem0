@@ -56,7 +56,10 @@ class MemoryConfig(BaseModel):
         description="Custom prompt for the update memory",
         default=None,
     )
-
+    timezone: Optional[str] = Field(
+        description="The timezone of the user",
+        default="Asia/Shanghai"
+    )
 
 class AzureConfig(BaseModel):
     """
